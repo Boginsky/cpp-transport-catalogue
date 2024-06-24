@@ -9,19 +9,9 @@ using namespace std;
 int main() {
     trasport_catalogue::TransportCatalogue catalogue;
     
-    int base_request_count;
-    cin >> base_request_count >> ws;
-
-    {
-        input_util::InputReader reader;
-        for (int i = 0; i < base_request_count; ++i) {
-            string line;
-            getline(cin, line);
-            reader.ParseLine(line);
-        }
-        reader.ApplyCommands(catalogue);
-    }
-
+    input_util::InputReader reader;
+    reader.ReadInfo(catalogue);
+    
     int stat_request_count;
     cin >> stat_request_count >> ws;
     for (int i = 0; i < stat_request_count; ++i) {

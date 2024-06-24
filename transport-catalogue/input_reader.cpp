@@ -1,7 +1,9 @@
 #include "input_reader.h"
 
-namespace input_util {
+#include <iostream>
 
+namespace input_util {
+    
     /**
      * Парсит строку вида "10.123,  -30.1837" и возвращает пару координат (широта, долгота)
      */
@@ -120,6 +122,21 @@ namespace input_util {
                 geo::Coordinates coordinates = ParseCoordinates(command_.description);
                 catalogue.AddStop(command_.id, coordinates);
             }
+        }
+    }
+    
+    void InputReader::ReadInfo(trasport_catalogue::TransportCatalogue& catalogue) {
+        int base_request_count;
+        std::cin >> base_request_count >> std::ws;
+
+        {
+            for (int i = 0; i < base_request_count; ++i) {
+                std::string line;
+                std::getline(std::cin, line);
+                ParseLine(line);
+            }
+            
+            ApplyCommands(catalogue);
         }
     }
 }

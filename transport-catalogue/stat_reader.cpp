@@ -48,13 +48,14 @@ namespace print_util {
                    const trasport_catalogue::TransportCatalogue& tansport_catalogue) {
         output << entity << ":";
         std::string stop_name = GetStopName(entity);
-    
-        if (!tansport_catalogue.IsStopExists(stop_name)) {
+        
+        const trasport_catalogue::Stop* stop = tansport_catalogue.GetStop(stop_name);
+        if (stop == nullptr) {
             output << " not found\n";
             return;
         }
     
-        std::vector<std::string_view> buses = tansport_catalogue.GetBusesByStop(stop_name);
+        const std::vector<std::string_view>& buses = tansport_catalogue.GetBusesByStop(stop_name);
         
         if (buses.empty()) {
             output << " no buses";

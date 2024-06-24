@@ -34,15 +34,15 @@ namespace trasport_catalogue {
         stopname_to_stop_[all_stops_.back().name] = &all_stops_.back();
     }
 
-    const Bus* TransportCatalogue::GetBus(const std::string& bus_number) const {
-        return busname_to_bus_.count(bus_number) 
-            ? busname_to_bus_.at(bus_number) 
+    const Bus* TransportCatalogue::GetBus(const std::string_view& bus_number) const {
+        return busname_to_bus_.count(std::string(bus_number)) 
+            ? busname_to_bus_.at(std::string(bus_number)) 
             : nullptr;
     }
 
-    const Stop* TransportCatalogue::GetStop(const std::string& stop_name) const {
-        return stopname_to_stop_.count(stop_name) 
-            ? stopname_to_stop_.at(stop_name) 
+    const Stop* TransportCatalogue::GetStop(const std::string_view& stop_name) const {
+        return stopname_to_stop_.count(std::string(stop_name)) 
+            ? stopname_to_stop_.at(std::string(stop_name)) 
             : nullptr;
     }
 
@@ -81,22 +81,11 @@ namespace trasport_catalogue {
         return unique_stops.size();
     }
 
-    const std::vector<std::string_view> TransportCatalogue::GetBusesByStop(const std::string_view& stop_name) const {
-        std::unordered_set<std::basic_string_view<char>> temp;
+    const std::vector<std::string_view> TransportCatalogue::GetBusesByStop(const std::string_view& stop_name) const {    
         const auto& buses = stopname_to_stop_.at(std::string(stop_name))->buses;
-    
-        for (const auto& bus : buses) {
-            temp.insert(bus);
-        }
-    
-        std::vector<std::string_view> result;
-        result.insert(result.end(), temp.begin(), temp.end());
+        std::vector<std::string_view> result(buses.begin(), buses.end());
         std::sort(result.begin(), result.end());
 
         return result;
-    }
-
-    bool TransportCatalogue::IsStopExists(const std::string_view& stop_name) const {
-         return stopname_to_stop_.count(std::string(stop_name)) > 0;
     }
 }
