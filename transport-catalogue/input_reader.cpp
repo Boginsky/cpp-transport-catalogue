@@ -138,14 +138,14 @@ namespace input_util {
         ApplyCommands(catalogue);
     }
     
-    void InputReader::OutputInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue) {      
+    void InputReader::OutputInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue, std::ostream& output_stream) {      
         int stat_request_count;
         input_stream >> stat_request_count >> std::ws;
         
         for (int i = 0; i < stat_request_count; ++i) {
             std::string line;
             std::getline(input_stream, line);
-            print_util::ParseAndPrintStat(catalogue, line, std::cout);
+            print_util::ParseAndPrintStat(catalogue, line, output_stream);
         }
     }
 }

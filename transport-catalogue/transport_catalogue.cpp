@@ -34,13 +34,13 @@ namespace trasport_catalogue {
         stopname_to_stop_[all_stops_.back().name] = &all_stops_.back();
     }
 
-    const Bus* TransportCatalogue::GetBus(const std::string_view& bus_number) const {
+    const Bus* TransportCatalogue::GetBus(const std::string_view bus_number) const {
         return busname_to_bus_.count(std::string(bus_number)) 
             ? busname_to_bus_.at(std::string(bus_number)) 
             : nullptr;
     }
 
-    const Stop* TransportCatalogue::GetStop(const std::string_view& stop_name) const {
+    const Stop* TransportCatalogue::GetStop(const std::string_view stop_name) const {
         return stopname_to_stop_.count(std::string(stop_name)) 
             ? stopname_to_stop_.at(std::string(stop_name)) 
             : nullptr;

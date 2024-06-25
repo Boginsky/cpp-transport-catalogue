@@ -35,8 +35,8 @@ namespace trasport_catalogue {
             void AddBus(const std::string& bus_number, const std::vector<std::string>& bus_stops, bool is_circular);
             void AddStop(const std::string& stop_name, const geo::Coordinates& coordinates);
     
-            const Bus* GetBus(const std::string_view& bus_number) const;
-            const Stop* GetStop(const std::string_view& stop_name) const;
+            const Bus* GetBus(const std::string_view bus_number) const;
+            const Stop* GetStop(const std::string_view stop_name) const;
             const RouteInfo GetRouteInformation(const std::string& route_number) const;
         private:
             std::deque<Bus> all_buses_;

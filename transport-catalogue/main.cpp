@@ -10,5 +10,5 @@ int main() {
     input_util::InputReader reader;
     
     reader.ReadInfo(cin, catalogue);
-    reader.OutputInfo(cin, catalogue);
+    reader.OutputInfo(cin, catalogue, cout);
 }

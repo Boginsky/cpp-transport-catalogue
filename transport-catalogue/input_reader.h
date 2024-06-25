@@ -34,7 +34,7 @@ namespace input_util {
         void ParseLine(std::string_view line);
         void ApplyCommands(trasport_catalogue::TransportCatalogue& catalogue) const;
         void ReadInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue);
-        void OutputInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue);
+        void OutputInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue, std::ostream& output_stream);
     private:
         std::vector<CommandDescription> commands_;
     };
