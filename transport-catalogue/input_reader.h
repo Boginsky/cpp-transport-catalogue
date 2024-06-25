@@ -2,6 +2,7 @@
 
 #include "geo.h"
 #include "transport_catalogue.h"
+#include "stat_reader.h"
 
 #include <string>
 #include <string_view>
@@ -32,7 +33,8 @@ namespace input_util {
     public:
         void ParseLine(std::string_view line);
         void ApplyCommands(trasport_catalogue::TransportCatalogue& catalogue) const;
-        void ReadInfo(trasport_catalogue::TransportCatalogue& catalogue);
+        void ReadInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue);
+        void OutputInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue);
     private:
         std::vector<CommandDescription> commands_;
     };

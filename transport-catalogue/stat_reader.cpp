@@ -55,7 +55,7 @@ namespace print_util {
             return;
         }
     
-        const std::vector<std::string_view>& buses = tansport_catalogue.GetBusesByStop(stop_name);
+        const std::set<std::string>& buses = tansport_catalogue.GetBusesByStop(stop_name);
         
         if (buses.empty()) {
             output << " no buses";

@@ -125,18 +125,27 @@ namespace input_util {
         }
     }
     
-    void InputReader::ReadInfo(trasport_catalogue::TransportCatalogue& catalogue) {
+    void InputReader::ReadInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue) {
         int base_request_count;
-        std::cin >> base_request_count >> std::ws;
+        input_stream >> base_request_count >> std::ws;
 
-        {
-            for (int i = 0; i < base_request_count; ++i) {
-                std::string line;
-                std::getline(std::cin, line);
-                ParseLine(line);
-            }
-            
-            ApplyCommands(catalogue);
+        for (int i = 0; i < base_request_count; ++i) {
+            std::string line;
+            std::getline(input_stream, line);
+            ParseLine(line);
+        }
+
+        ApplyCommands(catalogue);
+    }
+    
+    void InputReader::OutputInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue) {      
+        int stat_request_count;
+        input_stream >> stat_request_count >> std::ws;
+        
+        for (int i = 0; i < stat_request_count; ++i) {
+            std::string line;
+            std::getline(input_stream, line);
+            print_util::ParseAndPrintStat(catalogue, line, std::cout);
         }
     }
 }

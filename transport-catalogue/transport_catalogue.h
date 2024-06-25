@@ -6,7 +6,7 @@
 #include <deque>
 #include <vector>
 #include <unordered_map>
-#include <unordered_set>
+#include <set>
 
 namespace trasport_catalogue {
     
@@ -19,7 +19,7 @@ namespace trasport_catalogue {
     struct Stop {
         std::string name;
         geo::Coordinates coordinates;
-        std::unordered_set<std::string> buses;
+        std::set<std::string> buses;
     };
      
     struct RouteInfo {
@@ -30,7 +30,7 @@ namespace trasport_catalogue {
 
     class TransportCatalogue {
         public:
-            const std::vector<std::string_view> GetBusesByStop(const std::string_view& stop_name) const;
+            const std::set<std::string> GetBusesByStop(const std::string_view& stop_name) const;
 
             void AddBus(const std::string& bus_number, const std::vector<std::string>& bus_stops, bool is_circular);
             void AddStop(const std::string& stop_name, const geo::Coordinates& coordinates);

@@ -21,7 +21,7 @@ namespace trasport_catalogue {
     }
 
     void TransportCatalogue::AddStop(const std::string& stop_name,const geo::Coordinates& coordinates) {
-        std::unordered_set<std::string> bus_numbers;
+        std::set<std::string> bus_numbers;
         for (auto& bus_ : all_buses_) {
             for (auto& stop : bus_.stops) {
                 if (stop == stop_name) {
@@ -81,11 +81,7 @@ namespace trasport_catalogue {
         return unique_stops.size();
     }
 
-    const std::vector<std::string_view> TransportCatalogue::GetBusesByStop(const std::string_view& stop_name) const {    
-        const auto& buses = stopname_to_stop_.at(std::string(stop_name))->buses;
-        std::vector<std::string_view> result(buses.begin(), buses.end());
-        std::sort(result.begin(), result.end());
-
-        return result;
+    const std::set<std::string> TransportCatalogue::GetBusesByStop(const std::string_view& stop_name) const {    
+        return stopname_to_stop_.at(std::string(stop_name))->buses;
     }
 }
