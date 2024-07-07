@@ -44,11 +44,11 @@ namespace trasport_catalogue {
             const RouteInfo GetRouteInformation(const std::string& route_number) const;
         private:
             struct RouteDistanceHasher {
-     size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {
-            size_t hash_first = std::hash<const void*>{}(points.first);
-            size_t hash_second = std::hash<const void*>{}(points.second);
-            return hash_first + hash_second * 37;
-        }
+                size_t operator()(const std::pair<const Stop*, const Stop*>& stops) const {
+                    size_t hash_first_stop = std::hash<const void*>{}(stops.first);
+                    size_t hash_second_stop = std::hash<const void*>{}(stops.second);
+                    return hash_first_stop + hash_second_stop * 37;
+                }
             };
             
             std::deque<Bus> all_buses_;

@@ -130,7 +130,8 @@ namespace input_util {
 
         return result;
     }
-     
+    
+    
     void InputReader::ApplyCommands(trasport_catalogue::TransportCatalogue& catalogue) const {
         for (const CommandDescription& command_ : commands_) {
             if (command_.command == BUS_COMMAND_NAME) {
