@@ -30,4 +30,3 @@ namespace geo {
         * EARCH_RADIUS;
     }
 }
-

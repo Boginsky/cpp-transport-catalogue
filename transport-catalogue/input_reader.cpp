@@ -1,6 +1,7 @@
 #include "input_reader.h"
 
 #include <iostream>
+#include <sstream>
 
 namespace input_util {
     
@@ -104,7 +105,32 @@ namespace input_util {
     }
 
     inline static const std::string BUS_COMMAND_NAME = "Bus";
+    
+    std::vector<std::pair<int, std::string>> GetStopByDistance(const std::string& input) {
+        std::vector<std::pair<int, std::string>> result;
 
+        std::stringstream ss(input);
+        std::string token;
+
+        while (std::getline(ss, token, ',')) {
+            size_t index = token.find("m");
+            if (index != std::string::npos) {
+                int num = std::stoi(token.substr(0, index)); 
+                std::string destination = token.substr(index + 4);
+
+                size_t start = destination.find_first_not_of(" ");
+                size_t end = destination.find_last_not_of(" ");
+                if (start != std::string::npos && end != std::string::npos) {
+                    destination = destination.substr(start, end - start + 1);
+                }
+
+                result.emplace_back(num, destination);
+            }
+        }
+
+        return result;
+    }
+     
     void InputReader::ApplyCommands(trasport_catalogue::TransportCatalogue& catalogue) const {
         for (const CommandDescription& command_ : commands_) {
             if (command_.command == BUS_COMMAND_NAME) {
@@ -123,7 +149,19 @@ namespace input_util {
                 catalogue.AddStop(command_.id, coordinates);
             }
         }
-    }
+    
+        for (const CommandDescription& command_ : commands_) {
+            if (command_.command != BUS_COMMAND_NAME) {
+                std::vector<std::pair<int, std::string>> distanceByStop = GetStopByDistance(command_.description);
+                const trasport_catalogue::Stop* current_stop = catalogue.GetStop(command_.id);
+                
+                 for (auto pair_distance_by_stop : distanceByStop) {
+                     const trasport_catalogue::Stop* next_stop = catalogue.GetStop(pair_distance_by_stop.second);
+                     catalogue.SetDistance(current_stop, next_stop, pair_distance_by_stop.first);
+                 }
+             }
+         }
+     }
     
     void InputReader::ReadInfo(std::istream& input_stream, trasport_catalogue::TransportCatalogue& catalogue) {
         int base_request_count;

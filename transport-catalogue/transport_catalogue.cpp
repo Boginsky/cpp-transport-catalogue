@@ -46,7 +46,7 @@ namespace trasport_catalogue {
             : nullptr;
     }
 
-    const RouteInfo TransportCatalogue::GetRouteInformation(const std::string& route_number) const {
+    const RouteInfo TransportCatalogue::GetRouteInformation(const std::string& route_number) const {  
         RouteInfo route_info {};
         const Bus* bus = GetBus(route_number);
     
@@ -56,18 +56,19 @@ namespace trasport_catalogue {
             : bus->stops.size() * 2 - 1;
 
         double route_length = 0.0;
+        double geographic_length = 0.0;
         for (auto iter = bus->stops.begin(); iter + 1 != bus->stops.end(); ++iter) {
-            geo::Coordinates first_stop_coordinates = stopname_to_stop_.find(*iter)->second->coordinates;
-            geo::Coordinates second_stop_cooridnates = stopname_to_stop_.find(*(iter + 1))->second->coordinates;
-     
-            double distance = geo::ComputeDistance(first_stop_coordinates, second_stop_cooridnates);
-            
-            route_length += distance;
+            const Stop* first_stop = stopname_to_stop_.find(*iter)->second;
+            const Stop* second_stop = stopname_to_stop_.find(*(iter + 1))->second;
+                 
+            route_length += GetDistance(first_stop, second_stop);
+            geographic_length += geo::ComputeDistance(first_stop->coordinates, second_stop->coordinates);
         }
     
         route_info.unique_stops_count = UniqueStopsCount(route_number);
         route_info.route_length = route_length;
-
+        route_info.curvature = route_length / geographic_length;
+         
         return route_info;
     }
 
@@ -83,5 +84,19 @@ namespace trasport_catalogue {
 
     const std::set<std::string> TransportCatalogue::GetBusesByStop(const std::string_view& stop_name) const {    
         return stopname_to_stop_.at(std::string(stop_name))->buses;
+    }
+    
+    void TransportCatalogue::SetDistance(const Stop* from, const Stop* to, const int distance) {
+        route_distances_[{from, to}] = distance;
+    }
+    
+    int TransportCatalogue::GetDistance(const Stop* from, const Stop* to) const {
+        if (route_distances_.count({from, to})) {
+            return route_distances_.at({from, to});
+        } else if (route_distances_.count({to, from})) {
+            return route_distances_.at({to, from});
+        }
+        
+        return 0;
     }
 }

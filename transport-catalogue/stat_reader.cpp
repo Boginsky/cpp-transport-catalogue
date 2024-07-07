@@ -37,7 +37,9 @@ namespace print_util {
                 << " unique stops, " 
                 << std::setprecision(6)
                 << info.route_length 
-                << " route length\n";
+                << " route length, "
+                << info.curvature
+                << " curvature\n";    
         } else {
             output << entity << ": not found\n";
         }
