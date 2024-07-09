@@ -106,8 +106,8 @@ namespace input_util {
 
     inline static const std::string BUS_COMMAND_NAME = "Bus";
     
-    std::vector<std::pair<int, std::string>> GetStopByDistance(const std::string& input) {
-        std::vector<std::pair<int, std::string>> result;
+    std::unordered_map<std::string, int> GetStopByDistance(const std::string& input) {
+        std::unordered_map<std::string, int> result;
 
         std::stringstream ss(input);
         std::string token;
@@ -124,7 +124,7 @@ namespace input_util {
                     destination = destination.substr(start, end - start + 1);
                 }
 
-                result.emplace_back(num, destination);
+                result.insert(std::make_pair(destination, num));
             }
         }
 
@@ -153,12 +153,12 @@ namespace input_util {
     
         for (const CommandDescription& command_ : commands_) {
             if (command_.command != BUS_COMMAND_NAME) {
-                std::vector<std::pair<int, std::string>> distanceByStop = GetStopByDistance(command_.description);
+                std::unordered_map<std::string, int> distanceByStop = GetStopByDistance(command_.description);
                 const trasport_catalogue::Stop* current_stop = catalogue.GetStop(command_.id);
                 
                  for (auto pair_distance_by_stop : distanceByStop) {
-                     const trasport_catalogue::Stop* next_stop = catalogue.GetStop(pair_distance_by_stop.second);
-                     catalogue.SetDistance(current_stop, next_stop, pair_distance_by_stop.first);
+                     const trasport_catalogue::Stop* next_stop = catalogue.GetStop(pair_distance_by_stop.first);
+                     catalogue.SetDistance(current_stop, next_stop, pair_distance_by_stop.second);
                  }
              }
          }

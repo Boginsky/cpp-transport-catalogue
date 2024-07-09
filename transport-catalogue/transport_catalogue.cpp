@@ -35,14 +35,16 @@ namespace trasport_catalogue {
     }
 
     const Bus* TransportCatalogue::GetBus(const std::string_view bus_number) const {
-        return busname_to_bus_.count(std::string(bus_number)) 
-            ? busname_to_bus_.at(std::string(bus_number)) 
+        auto it = busname_to_bus_.find(std::string(bus_number));
+        return it != busname_to_bus_.end()
+            ? it->second
             : nullptr;
     }
 
     const Stop* TransportCatalogue::GetStop(const std::string_view stop_name) const {
-        return stopname_to_stop_.count(std::string(stop_name)) 
-            ? stopname_to_stop_.at(std::string(stop_name)) 
+        auto it = stopname_to_stop_.find(std::string(stop_name));
+        return it != stopname_to_stop_.end()
+            ? it->second
             : nullptr;
     }
 
@@ -91,10 +93,14 @@ namespace trasport_catalogue {
     }
     
     int TransportCatalogue::GetDistance(const Stop* from, const Stop* to) const {
-        if (route_distances_.count({from, to})) {
-            return route_distances_.at({from, to});
-        } else if (route_distances_.count({to, from})) {
-            return route_distances_.at({to, from});
+        auto it_from_to = route_distances_.find({from, to});
+        if (it_from_to != route_distances_.end()) {
+            return it_from_to->second;
+        }
+        
+        auto it_to_from = route_distances_.find({to, from});
+        if (it_to_from != route_distances_.end()) {
+            return it_to_from->second;
         }
         
         return 0;
