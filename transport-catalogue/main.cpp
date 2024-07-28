@@ -1,14 +1,15 @@
-#include <iostream>
-#include <string>
-
-#include "input_reader.h"
-
-using namespace std;
+#include "json_reader.h"
+#include "request_handler.h"
 
 int main() {
     trasport_catalogue::TransportCatalogue catalogue;
-    input_util::InputReader reader;
+    JsonReader json_doc(std::cin);
     
-    reader.ReadInfo(cin, catalogue);
-    reader.OutputInfo(cin, catalogue, cout);
+    json_doc.FillCatalogue(catalogue);
+    
+    const auto& stat_requests = json_doc.GetStatRequests();
+    const auto& renderer = json_doc.FillRenderSettings();
+
+    RequestHandler rh(catalogue, renderer);
+    json_doc.ProcessRequests(stat_requests, rh);
 }
