@@ -23,7 +23,7 @@ class JsonReader {
         const json::Node& GetStatRequests() const;
         const json::Node& GetRenderSettings() const;
 
-        void ProcessRequests(const json::Node& stat_requests) const;
+        void ProcessRequests() const;
 
         void FillCatalogue();
         renderer::MapRenderer FillRenderSettings();

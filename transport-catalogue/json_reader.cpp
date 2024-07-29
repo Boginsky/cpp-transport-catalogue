@@ -44,7 +44,9 @@ const json::Node& JsonReader::GetRenderSettings() const {
     return input_.GetRoot().AsMap().at("render_settings");
 }
 
-void JsonReader::ProcessRequests(const json::Node& stat_requests) const {
+void JsonReader::ProcessRequests() const {
+    const auto& stat_requests = GetStatRequests();
+    
     json::Array result;
     for (auto& request : stat_requests.AsArray()) {
         const auto& request_map = request.AsMap();
