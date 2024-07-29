@@ -83,16 +83,16 @@ namespace renderer {
 
     class MapRenderer {
     public:
+        MapRenderer() = default;
         MapRenderer(const RenderSettings& render_settings) : render_settings_(render_settings) {}
-    
+                
+        svg::Document GetSVG(const std::map<std::string_view, const trasport_catalogue::Bus*>& buses) const;
+    private:
+        const RenderSettings render_settings_;
+        
         std::vector<svg::Polyline> GetRouteLines(const std::map<std::string_view, const trasport_catalogue::Bus*>& buses, const SphereProjector& sp) const;
         std::vector<svg::Text> GetBusLabel(const std::map<std::string_view, const trasport_catalogue::Bus*>& buses, const SphereProjector& sp) const;
         std::vector<svg::Circle> GetStopsSymbols(const std::map<std::string_view, const trasport_catalogue::Stop*>& stops, const SphereProjector& sp) const;
-        std::vector<svg::Text> GetStopsLabels(const std::map<std::string_view, const trasport_catalogue::Stop*>& stops, const SphereProjector& sp) const;
-    
-        svg::Document GetSVG(const std::map<std::string_view, const trasport_catalogue::Bus*>& buses) const;
-    
-    private:
-        const RenderSettings render_settings_;
+        std::vector<svg::Text> GetStopsLabels(const std::map<std::string_view, const trasport_catalogue::Stop*>& stops, const SphereProjector& sp) const; 
     };
 }

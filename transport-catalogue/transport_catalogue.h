@@ -19,13 +19,14 @@ namespace trasport_catalogue {
     class TransportCatalogue {
         public:
             void AddStop(std::string_view stop_name, const geo::Coordinates coordinates);
-            void AddBus(std::string_view bus_number, const std::vector<const Stop*> stops, bool is_circle);
+            void AddBus(std::string_view bus_number, const std::vector<const Stop*>& stops, bool is_circle);
             const Bus* GetBus(std::string_view bus_number) const;
             const Stop* GetStop(std::string_view stop_name) const;
             size_t UniqueStopsCount(std::string_view bus_number) const;
             void SetDistance(const Stop* from, const Stop* to, const int distance);
             int GetDistance(const Stop* from, const Stop* to) const;
             const std::map<std::string_view, const Bus*> GetSortedAllBuses() const;
+             std::optional<trasport_catalogue::RouteInfo> GetRouteInformation(const std::string_view bus_number) const;
         private:
             struct StopDistancesHasher {
                 size_t operator()(const std::pair<const Stop*, const Stop*>& points) const {

@@ -7,7 +7,7 @@ namespace trasport_catalogue {
         stopname_to_stop_[all_stops_.back().name] = &all_stops_.back();
     }
     
-    void TransportCatalogue::AddBus(std::string_view bus_number, const std::vector<const Stop*> stops, bool is_circle) {
+    void TransportCatalogue::AddBus(std::string_view bus_number, const std::vector<const Stop*>& stops, bool is_circle) {
         all_buses_.push_back({ std::string(bus_number), stops, is_circle });
         busname_to_bus_[all_buses_.back().number] = &all_buses_.back();
         for (const auto& route_stop : stops) {
@@ -19,15 +19,17 @@ namespace trasport_catalogue {
         }
     }
 
-    const Bus* TransportCatalogue::GetBus(std::string_view bus_number) const {
-        return busname_to_bus_.count(bus_number) 
-            ? busname_to_bus_.at(bus_number) 
+   const Bus* TransportCatalogue::GetBus(const std::string_view bus_number) const {
+        auto it = busname_to_bus_.find(std::string(bus_number));
+        return it != busname_to_bus_.end()
+            ? it->second
             : nullptr;
     }
 
-    const Stop* TransportCatalogue::GetStop(std::string_view stop_name) const {
-        return stopname_to_stop_.count(stop_name)
-            ? stopname_to_stop_.at(stop_name) 
+    const Stop* TransportCatalogue::GetStop(const std::string_view stop_name) const {
+        auto it = stopname_to_stop_.find(std::string(stop_name));
+        return it != stopname_to_stop_.end()
+            ? it->second
             : nullptr;
     }
 
@@ -63,5 +65,43 @@ namespace trasport_catalogue {
         }
         
         return result;
+    }
+    
+    std::optional<trasport_catalogue::RouteInfo> TransportCatalogue::GetRouteInformation(const std::string_view bus_number) const {
+        trasport_catalogue::RouteInfo bus_stat{};
+        const trasport_catalogue::Bus* bus = GetBus(bus_number);
+
+        if (!bus) {
+            throw std::invalid_argument("bus not found");  
+        } 
+    
+        if (bus->is_circular) {
+            bus_stat.stops_count = bus->stops.size();    
+        } else {
+            bus_stat.stops_count = bus->stops.size() * 2 - 1;    
+        } 
+
+        int route_length = 0;
+        double geographic_length = 0.0;
+
+        for (size_t i = 0; i < bus->stops.size() - 1; ++i) {
+            auto from = bus->stops[i];
+            auto to = bus->stops[i + 1];
+            if (bus->is_circular) {
+                route_length += GetDistance(from, to);
+                geographic_length += geo::ComputeDistance(from->coordinates,
+                    to->coordinates);
+            } else {
+                route_length += GetDistance(from, to) + GetDistance(to, from);
+                geographic_length += geo::ComputeDistance(from->coordinates,
+                    to->coordinates) * 2;
+            }
+        }
+    
+        bus_stat.unique_stops_count = UniqueStopsCount(bus_number);
+        bus_stat.route_length = route_length;
+        bus_stat.curvature = route_length / geographic_length;
+    
+        return bus_stat;
     }
 }
