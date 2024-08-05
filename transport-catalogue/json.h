@@ -43,9 +43,11 @@ public:
     const std::string& AsString() const;
     const Array& AsArray() const;
     const Dict& AsMap() const;
+    Dict& AsMap();
 
     const Value& GetValue() const;
-
+    Value& GetValue();
+    
     bool operator==(const Node& rhs) const;
     bool operator!=(const Node& rhs) const;
 private:

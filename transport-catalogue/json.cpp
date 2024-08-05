@@ -290,8 +290,17 @@ const Dict& Node::AsMap() const {
     if (!IsMap()) throw ParsingError("wrong map");
     return std::get<Dict>(value_);
 }
+    
+Dict& Node::AsMap() {
+    if (!IsMap()) throw ParsingError("wrong map");
+    return std::get<Dict>(value_);
+}    
 
 const Node::Value& Node::GetValue() const {
+    return value_;
+}
+    
+Node::Value& Node::GetValue() {
     return value_;
 }
 
