@@ -7,21 +7,20 @@
 #include <set>
 #include <unordered_map>
 
-namespace trasport_catalogue {
-
+namespace transport {
     struct Stop {
         std::string name;
         geo::Coordinates coordinates;
-        std::set<std::string> buses;
+        std::set<std::string> buses_by_stop;
     };
 
     struct Bus {
         std::string number;
         std::vector<const Stop*> stops;
-        bool is_circular;
+        bool is_circle;
     };
 
-    struct RouteInfo {
+    struct BusStat {
         size_t stops_count;
         size_t unique_stops_count;
         double route_length;
