@@ -11,7 +11,7 @@ int main() {
     const auto& render_settings = json_doc.GetRenderSettings();
     const auto& renderer = json_doc.FillRenderSettings(render_settings);
     const auto& routing_settings = json_doc.FillRoutingSettings(json_doc.GetRoutingSettings());
-    const transport::Router router = { routing_settings, catalogue };
+    const transport::Router router = { catalogue, routing_settings };
 
     RequestHandler rh(catalogue, renderer, router);
     json_doc.ProcessRequests(stat_requests, rh);

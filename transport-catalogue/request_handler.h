@@ -17,8 +17,7 @@ class RequestHandler {
         const std::set<std::string> GetBusesByStop(std::string_view stop_name) const;
         bool IsBusNumber(const std::string_view bus_number) const;
         bool IsStopName(const std::string_view stop_name) const;
-        const std::optional<graph::Router<double>::RouteInfo> GetOptimalRoute(const std::string_view stop_from, const std::string_view stop_to) const;
-        const graph::DirectedWeightedGraph<double>& GetRouterGraph() const;
+        const transport::Info GetOptimalRoute(const std::string_view stop_from, const std::string_view stop_to) const;
     
         svg::Document RenderMap() const;
     

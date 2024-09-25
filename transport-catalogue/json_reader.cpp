@@ -173,9 +173,8 @@ renderer::MapRenderer JsonReader::FillRenderSettings(const json::Node& settings)
     return render_settings;
 }
 
-transport::Router JsonReader::FillRoutingSettings(const json::Node& settings) const {
-    transport::Router routing_settings;
-    return transport::Router{ settings.AsDict().at("bus_wait_time"s).AsInt(), settings.AsDict().at("bus_velocity"s).AsDouble() };
+transport::Settings JsonReader::FillRoutingSettings(const json::Node& settings) const {
+    return {settings.AsDict().at("bus_velocity"s).AsDouble(), settings.AsDict().at("bus_wait_time"s).AsInt()};
 }
 
 const json::Node JsonReader::PrintRoute(const json::Dict& request_map, RequestHandler& rh) const {
@@ -258,7 +257,7 @@ const json::Node JsonReader::PrintRouting(const json::Dict& request_map, Request
     const std::string_view stop_to = request_map.at("to"s).AsString();
     const auto& routing = rh.GetOptimalRoute(stop_from, stop_to);
     
-    if (!routing) {
+    if (!routing.route_info) {
         result = json::Builder{}
             .StartDict()
                 .Key("request_id"s).Value(id)
@@ -268,9 +267,9 @@ const json::Node JsonReader::PrintRouting(const json::Dict& request_map, Request
     } else {
         json::Array items;
         double total_time = 0.0;
-        items.reserve(routing.value().edges.size());
-        for (auto& edge_id : routing.value().edges) {
-            const graph::Edge<double> edge = rh.GetRouterGraph().GetEdge(edge_id);
+        items.reserve(routing.route_info.value().edges.size());
+        for (auto& edge_id : routing.route_info.value().edges) {
+            auto edge = routing.grapth_info_by_edge_id.at(edge_id);
             if (edge.quality == 0) {
                 items.emplace_back(json::Node(json::Builder{}
                     .StartDict()

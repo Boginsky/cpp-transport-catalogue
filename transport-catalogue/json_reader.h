@@ -20,7 +20,7 @@ class JsonReader {
 
         void FillCatalogue(transport::Catalogue& catalogue);
         renderer::MapRenderer FillRenderSettings(const json::Node& settings) const;
-        transport::Router FillRoutingSettings(const json::Node& settings) const;
+        transport::Settings FillRoutingSettings(const json::Node& settings) const;
 
         const json::Node PrintRoute(const json::Dict& request_map, RequestHandler& rh) const;
         const json::Node PrintStop(const json::Dict& request_map, RequestHandler& rh) const;

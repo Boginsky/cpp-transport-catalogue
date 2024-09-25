@@ -2,6 +2,9 @@
 
 #include <string>
 
+#define DISTANCE_COEF 100.0
+#define TIME_COEF 6.0
+
 namespace transport {
     const graph::DirectedWeightedGraph<double>& Router::BuildGraph(const Catalogue& catalogue) {
         const auto& all_stops = catalogue.GetSortedAllStops();
@@ -17,7 +20,7 @@ namespace transport {
                     0,
                     vertex_id,
                     ++vertex_id,
-                    static_cast<double>(bus_wait_time_)
+                    static_cast<double>(settings_.bus_wait_time_)
                 });
             ++vertex_id;
         }
@@ -45,14 +48,14 @@ namespace transport {
                                               j - i,
                                               stop_ids_.at(stop_from->name) + 1,
                                               stop_ids_.at(stop_to->name),
-                                              static_cast<double>(dist_sum) / (bus_velocity_ * (100.0 / 6.0))});
+                                              static_cast<double>(dist_sum) / (settings_.bus_velocity_ * (DISTANCE_COEF / TIME_COEF))});
     
                         if (!bus_info->is_circle) {
                             stops_graph.AddEdge({ bus_info->number,
                                                   j - i,
                                                   stop_ids_.at(stop_to->name) + 1,
                                                   stop_ids_.at(stop_from->name),
-                                                  static_cast<double>(dist_sum_inverse) / (bus_velocity_ * (100.0 / 6.0))});
+                                                  static_cast<double>(dist_sum_inverse) / (settings_.bus_velocity_ * (DISTANCE_COEF / TIME_COEF))});
                         }
                     }
                 }
@@ -64,8 +67,21 @@ namespace transport {
         return graph_;
     }
     
-    const std::optional<graph::Router<double>::RouteInfo> Router::FindRoute(const std::string_view stop_from, const std::string_view stop_to) const {
-        return router_->BuildRoute(stop_ids_.at(std::string(stop_from)),stop_ids_.at(std::string(stop_to)));
+    const Info Router::FindRoute(const std::string_view stop_from, const std::string_view stop_to) const {
+        std::optional<graph::Router<double>::RouteInfo> route_info = router_->BuildRoute(
+            stop_ids_.at(std::string(stop_from)), 
+            stop_ids_.at(std::string(stop_to))
+        );     
+        
+        std::map<size_t, GraphInfo> map;
+        if (route_info) {
+            for (size_t edge_id : route_info.value().edges) {
+                auto edge = graph_.GetEdge(edge_id);
+                map[edge_id] = {edge.name, edge.quality, edge.weight};
+            } 
+        }
+        
+        return Info{route_info, map};
     }
 
     const graph::DirectedWeightedGraph<double>& Router::GetGraph() const {
